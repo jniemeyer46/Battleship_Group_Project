@@ -19,7 +19,7 @@ class BattleshipTest(unittest.TestCase):
 
         # test that the board is empty
         expectedValue = ' '
-        actualValue = testObject.columnn[0].row[0]
+        actualValue = testObject.board[0][0]
         assert(actualValue == expectedValue)
 
 
