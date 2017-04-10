@@ -1,4 +1,4 @@
-# Caroline Tran, John Neimeyer, Faith Van Wig, Brendan Missel
+# Caroline Tran, John Niemeyer, Faith Van Wig, Brendan Missel
 # Chunky Jelly Fish Burritos Programming Group
 # Battleship Testing File
 
@@ -10,10 +10,18 @@ from GameObjects import Board
 
 class BattleshipTest(unittest.TestCase):
     def testGameBoardInit(self):
-        expectedValue =
         testObject = Board()
-        actualValue =
+
+        # test the size of the board
+        expectedValue = 10
+        actualValue = testObject.size
         assert(actualValue == expectedValue)
+
+        # test that the board is empty
+        expectedValue = ' '
+        actualValue = testObject.columnn[0].row[0]
+        assert(actualValue == expectedValue)
+
 
 if __name__ == '__main__':
     b = BattleshipTest()
