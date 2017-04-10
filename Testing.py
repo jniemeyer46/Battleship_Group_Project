@@ -22,6 +22,12 @@ class BattleshipTest(unittest.TestCase):
         actualValue = testObject.board[0][0]
         assert(actualValue == expectedValue)
 
+    def testBoatLocation(self):
+        testObject = Board()
+
+        expectedValue = 'O'
+        actualValue = testObject.board[0][1]
+        assert(actualValue == expectedValue)
 
 if __name__ == '__main__':
     b = BattleshipTest()
