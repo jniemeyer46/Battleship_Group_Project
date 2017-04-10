@@ -25,6 +25,9 @@ class BattleshipTest(unittest.TestCase):
     def testBoatLocation(self):
         testObject = Board()
 
+        model = ModelBattleship()
+        model.placeShip(testObject, 1, [0, 1], 'v')
+
         expectedValue = 'O'
         actualValue = testObject.board[0][1]
         assert(actualValue == expectedValue)
