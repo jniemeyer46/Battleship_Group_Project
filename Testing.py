@@ -69,16 +69,16 @@ class BattleshipTest(unittest.TestCase):
         testObject = Board()
         model = ModelBattleship()
 
-        model.placeShip(testObject, 8, [8,2], 'v')
-        model.placeShot(testObject, [10, 10])
+        #model.placeShip(testObject, 8, [8,2], 'v')
+        #model.placeShot(testObject, [10, 10])
 
     def testWin(self):
         testObject = Board()
         model = ModelBattleship()
-        model.placeShip(testObject, 1, [0,0], 'v')
+        model.placeShip(testObject, 2, [0,0], 'v')
         model.placeShot(testObject, [0,0])
 
-        expectedValue = True
+        expectedValue = False
         actualValue = model.checkWin(testObject)
         assert(actualValue == expectedValue)
 
