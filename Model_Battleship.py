@@ -24,3 +24,6 @@ class ModelBattleship:
         except:
             print("Shot is out of bounds! Try again.")
 
+    def checkWin(self, myBoard):
+        pass
+

@@ -27,8 +27,8 @@ class BattleshipTest(unittest.TestCase):
         model = ModelBattleship()
 
         model.placeShip(testObject, 1, [0, 2], 'v')
-        view = ViewBattleship()
-        view.displayBoard(testObject)
+        #view = ViewBattleship()
+        #view.displayBoard(testObject)
         expectedValue = 'O'
         actualValue = testObject.board[0][2]
         assert(actualValue == expectedValue)
@@ -38,8 +38,8 @@ class BattleshipTest(unittest.TestCase):
         model = ModelBattleship()
 
         model.placeShip(testObject, 3, [5, 2], 'v')
-        view = ViewBattleship()
-        view.displayBoard(testObject)
+        #view = ViewBattleship()
+        #view.displayBoard(testObject)
         expectedValue = 'O'
         actualValue = testObject.board[5][2]
         assert(actualValue == expectedValue)
@@ -72,6 +72,15 @@ class BattleshipTest(unittest.TestCase):
         model.placeShip(testObject, 8, [8,2], 'v')
         model.placeShot(testObject, [10, 10])
 
+    def testWin(self):
+        testObject = Board()
+        model = ModelBattleship()
+        model.placeShip(testObject, 1, [0,0], 'v')
+        model.placeShot(testObject, [0,0])
+
+        expectedValue = True
+        actualValue = model.checkWin(testObject)
+        assert(actualValue == expectedValue)
 
 if __name__ == '__main__':
     b = BattleshipTest()
@@ -80,3 +89,4 @@ if __name__ == '__main__':
     b.testBiggerBoatLocation()
     b.testFireShot()
     b.testOutofBounds()
+    b.testWin()

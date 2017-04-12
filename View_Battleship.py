@@ -124,3 +124,11 @@ class ViewBattleship():
         arr[0] = (sb_head, sb_orient)
         return arr
 
+    def getShot(self):
+        shot = input("Time to fire! Where would you like to place your shot? e.g. A6 or E2 ")
+        shot = list(shot)
+        shot[0] = self.convertCoordinates(shot[0])
+        shot[0], shot[1] = shot[1], shot[0]
+        shot = ''.join(shot)
+        return shot
+
