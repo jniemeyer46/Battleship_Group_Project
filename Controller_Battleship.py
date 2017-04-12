@@ -20,16 +20,28 @@ class ControllerBattleship:
         self.view.displayBoard(self.enemyBoard)
         shot = self.view.getShot()
         self.model.placeShot(self.enemyBoard, shot)
+    def makeDummyBoard(self):
+        self.model.placeShip(self.enemyBoard, 5, [0, 0], 'v')
+        self.model.placeShip(self.enemyBoard, 4, [0, 1], 'v')
+        self.model.placeShip(self.enemyBoard, 3, [0, 2], 'v')
+        self.model.placeShip(self.enemyBoard, 2, [0, 3], 'v')
+        self.model.placeShip(self.enemyBoard, 1, [0, 4], 'v')
 
 
 if __name__ == '__main__':
     controller = ControllerBattleship()
 #    controller.ViewtoModel()
     view = ViewBattleship()
+    model = ModelBattleship()
+    controller.makeDummyBoard()
+    view.display("Welcome to Battleship!")
     view.displayBoard(controller.playerBoard)
     controller.inputShips()
     view.displayBoard(controller.playerBoard)
     while 1:
-        if False == False :
+        if model.checkWin(controller.enemyBoard) == False :
             controller.getShot()
+        else:
+            break
+    view.display("Congrats you won!!")
 

@@ -30,3 +30,6 @@ class ModelBattleship:
                 return False
         return True
 
+    def maskBoard(self, myBoard):
+        pass
+

@@ -5,6 +5,7 @@
 import unittest
 from Model_Battleship import ModelBattleship
 from View_Battleship import ViewBattleship
+from Controller_Battleship import ControllerBattleship
 from GameObjects import Board
 
 
@@ -87,6 +88,21 @@ class BattleshipTest(unittest.TestCase):
         actualValue = model.checkWin(testObject)
         assert (actualValue == expectedValue)
 
+    def testMaskBoard(self):
+        testObject = Board()
+        model = ModelBattleship()
+        model.placeShip(testObject, 5, [0, 0], 'v')
+        model.placeShip(testObject, 4, [0, 1], 'v')
+        model.placeShip(testObject, 3, [0, 2], 'v')
+        model.placeShip(testObject, 2, [0, 3], 'v')
+        model.placeShip(testObject, 1, [0, 4], 'v')
+
+        maskedBoard = model.maskBoard(testObject)
+
+        actualValue = testObject
+        expectedValue = maskedBoard
+        assert(actualValue == expectedValue)
+
 if __name__ == '__main__':
     b = BattleshipTest()
     b.testGameBoardInit()
@@ -95,3 +111,4 @@ if __name__ == '__main__':
     b.testFireShot()
     b.testOutofBounds()
     b.testWin()
+    b.testMaskBoard()

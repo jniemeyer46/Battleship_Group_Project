@@ -132,3 +132,5 @@ class ViewBattleship():
         shot = ''.join(shot)
         return shot
 
+    def display(self, string):
+        print(string)
