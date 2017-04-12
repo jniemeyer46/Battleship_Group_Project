@@ -42,6 +42,7 @@ if __name__ == '__main__':
         if model.checkWin(controller.enemyBoard) == False :
             controller.getShot()
         else:
+            view.displayBoard(controller.enemyBoard)
             break
     view.display("Congrats you won!!")
 

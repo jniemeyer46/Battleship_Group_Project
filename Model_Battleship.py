@@ -21,8 +21,10 @@ class ModelBattleship:
         try:
             if  myBoard.board[location[0]][location[1]] == ' ':
                 myBoard.board[location[0]][location[1]] = '*'
+                print("MISS!")
             elif myBoard.board[location[0]][location[1]] == 'O':
                 myBoard.board[location[0]][location[1]] = 'X'
+                print("HIT!")
         except:
             print("Shot is out of bounds! Try again.")
 
