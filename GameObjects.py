@@ -3,8 +3,10 @@
 # Battleship GameObjects file
 
 class Board():
+    '''
+        A cell can be reference to using board[row][column]
+    '''
     def __init__(self):
         self.size = 10
-        row = [' ' for i in range(0, self.size)]
-        self.board = [row for i in range(0, self.size)]
+        self.board = [[' ' for i in range(0, self.size)] for i in range(0, self.size)]
 

@@ -7,9 +7,9 @@ class ModelBattleship:
         myBoard.board[start[0]][start[1]] = 'O'
         if orient == 'v':
             for i in range(0, type):
-                myBoard.board[start[0]][start[1+i]] = 'O'
+                myBoard.board[start[0]][start[1]+i] = 'O'
         elif orient == 'h':
-            for i in range(0, type):
-                myBoard.board[start[0+1]][start[1]] = 'O'
+           for i in range(0, type):
+                myBoard.board[start[0]+i][start[1]] = 'O'
 
 
