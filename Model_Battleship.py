@@ -13,4 +13,7 @@ class ModelBattleship:
                 myBoard.board[start[0]][start[1]+i] = 'O'
 
     def placeShot(self, myBoard, location):
-        pass
+        if  myBoard.board[location[0]][location[1]] == ' ':
+            myBoard.board[location[0]][location[1]] = '*'
+        elif myBoard.board[location[0]][location[1]] == 'O':
+            myBoard.board[location[0]][location[1]] = 'X'
