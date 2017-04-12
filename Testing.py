@@ -36,8 +36,6 @@ class BattleshipTest(unittest.TestCase):
         testObject = Board()
         model = ModelBattleship()
         model.placeShip(testObject, 3, [5, 2], 'v')
-        view = ViewBattleship()
-        view.displayBoard(testObject)
         expectedValue = 'O'
         actualValue = testObject.board[5][2]
         assert(actualValue == expectedValue)
@@ -45,6 +43,15 @@ class BattleshipTest(unittest.TestCase):
         assert (actualValue == expectedValue)
         actualValue = testObject.board[7][2]
         assert (actualValue == expectedValue)
+
+    def testFireShot(self):
+        testObject = Board()
+        model = ModelBattleship()
+        model.placeShot(testObject, [5, 2])
+
+        expectedValue = '*'
+        actualValue = testObject.board[5][2]
+        assert(actualValue == expectedValue)
 
 
 

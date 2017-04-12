@@ -11,3 +11,6 @@ class ModelBattleship:
         elif orient == 'h':
             for i in range(0, type):
                 myBoard.board[start[0]][start[1]+i] = 'O'
+
+    def placeShot(self, myBoard, location):
+        pass
