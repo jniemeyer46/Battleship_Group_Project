@@ -7,16 +7,23 @@ from View_Battleship import ViewBattleship
 from GameObjects import Board
 
 class ControllerBattleship:
-#    def ViewToModel(self):
-    pass
+    playerBoard = Board()
+    enemyBoard = Board()
+    view = ViewBattleship()
+    model = ModelBattleship()
+
+    def inputShips(self):
+        arr = self.view.getShips()
+        for i in range(0, 5):
+            self.model.placeShip(self.playerBoard, i+1, [int(arr[i][0][0]), int(arr[i][0][1])], arr[i][1])
 
 
 
 if __name__ == '__main__':
-#    controller = ControllerBattleship()
+    controller = ControllerBattleship()
 #    controller.ViewtoModel()
     view = ViewBattleship()
-
-    myBoard = Board()
-    view.displayBoard(myBoard)
+    view.displayBoard(controller.playerBoard)
+    controller.inputShips()
+    view.displayBoard(controller.playerBoard)
 
