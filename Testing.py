@@ -54,19 +54,21 @@ class BattleshipTest(unittest.TestCase):
         model.placeShip(testObject, 3, [5, 2], 'v')
         model.placeShot(testObject, [5, 2])
 
-        view = ViewBattleship()
-        view.displayBoard(testObject)
-
         expectedValue = 'X'
         actualValue = testObject.board[5][2]
         assert(actualValue == expectedValue)
 
         model.placeShot(testObject, [9,9])
-        view = ViewBattleship()
-        view.displayBoard(testObject)
         expectedValue = '*'
         actualValue = testObject.board[9][9]
         assert(actualValue == expectedValue)
+
+    def testOutofBounds(self):
+        testObject = Board()
+        model = ModelBattleship()
+
+        model.placeShip(testObject, 8, [8,2], 'v')
+        model.placeShot(testObject, [10, 10])
 
 
 if __name__ == '__main__':
@@ -75,3 +77,4 @@ if __name__ == '__main__':
     b.testBoatLocation()
     b.testBiggerBoatLocation()
     b.testFireShot()
+    b.testOutofBounds()
