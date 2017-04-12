@@ -17,7 +17,7 @@ class ControllerBattleship:
         for i in range(0, 5):
             self.model.placeShip(self.playerBoard, i+1, [int(arr[i][0][0]), int(arr[i][0][1])], arr[i][1])
     def getShot(self):
-        self.view.displayBoard(self.enemyBoard)
+        self.view.displayBoard(self.model.maskBoard(self.enemyBoard))
         shot = self.view.getShot()
         self.model.placeShot(self.enemyBoard, shot)
     def makeDummyBoard(self):
