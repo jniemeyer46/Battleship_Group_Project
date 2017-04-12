@@ -96,12 +96,16 @@ class BattleshipTest(unittest.TestCase):
         model.placeShip(testObject, 3, [0, 2], 'v')
         model.placeShip(testObject, 2, [0, 3], 'v')
         model.placeShip(testObject, 1, [0, 4], 'v')
+        model.placeShot(testObject, [0,0])
 
         maskedBoard = model.maskBoard(testObject)
-
+        view = ViewBattleship()
+        view.displayBoard(testObject)
+        print("\n \n")
+        view.displayBoard(maskedBoard)
         actualValue = testObject
         expectedValue = maskedBoard
-        assert(actualValue == expectedValue)
+        assert(actualValue != expectedValue)
 
 if __name__ == '__main__':
     b = BattleshipTest()

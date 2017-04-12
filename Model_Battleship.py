@@ -2,6 +2,8 @@
 # Chunky Jelly Fish Burritos Programming Group
 # Battleship Model
 
+from copy import copy, deepcopy
+
 class ModelBattleship:
     def placeShip(self, myBoard, type, start, orient):
         try:
@@ -31,5 +33,11 @@ class ModelBattleship:
         return True
 
     def maskBoard(self, myBoard):
-        pass
+        maskedBoard = deepcopy(myBoard)
+        for i in range(0, 10):
+            for j in range(0, 10):
+                if maskedBoard.board[j][i] == 'O':
+                    maskedBoard.board[j][i] = ' '
+        return maskedBoard
+
 
