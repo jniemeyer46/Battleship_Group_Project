@@ -82,6 +82,11 @@ class BattleshipTest(unittest.TestCase):
         actualValue = model.checkWin(testObject)
         assert(actualValue == expectedValue)
 
+        model.placeShot(testObject, [1, 0])
+        expectedValue = True
+        actualValue = model.checkWin(testObject)
+        assert (actualValue == expectedValue)
+
 if __name__ == '__main__':
     b = BattleshipTest()
     b.testGameBoardInit()

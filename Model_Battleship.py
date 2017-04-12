@@ -25,5 +25,8 @@ class ModelBattleship:
             print("Shot is out of bounds! Try again.")
 
     def checkWin(self, myBoard):
+        for i in myBoard.board:
+            if 'O' in i:
+                return False
         return True
 
