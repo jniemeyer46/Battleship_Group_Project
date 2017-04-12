@@ -35,14 +35,18 @@ class BattleshipTest(unittest.TestCase):
     def testBiggerBoatLocation(self):
         testObject = Board()
         model = ModelBattleship()
-        model.placeShip(testObject, 3, [8, 2], 'v')
-
+        model.placeShip(testObject, 3, [5, 2], 'v')
+        view = ViewBattleship()
+        view.displayBoard(testObject)
         expectedValue = 'O'
-        actualValue = testObject.board[8, 2]
+        actualValue = testObject.board[5][2]
         assert(actualValue == expectedValue)
-        expectedValue = 'O'
-        actualValue = testObject.board[8, 3]
+        actualValue = testObject.board[6][2]
         assert (actualValue == expectedValue)
+        actualValue = testObject.board[7][2]
+        assert (actualValue == expectedValue)
+
+
 
 
 if __name__ == '__main__':
