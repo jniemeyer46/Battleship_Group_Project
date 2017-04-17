@@ -125,6 +125,21 @@ class BattleshipTest(unittest.TestCase):
         expectedValue = False
         assert(actualValue == expectedValue)
 
+    def testScore(self):
+        testObject = Board()
+        model = ModelBattleship()
+        model.placeShip(testObject, 3, [5, 2], 'v')
+        model.placeShot(testObject, [5, 2])
+
+        expectedValue = 100
+        actualValue = testObject.score
+        assert (actualValue == expectedValue)
+
+        model.placeShot(testObject, [9, 9])
+        expectedValue = 90
+        actualValue = testObject.score
+        assert (actualValue == expectedValue)
+
 
 
 if __name__ == '__main__':
@@ -138,3 +153,4 @@ if __name__ == '__main__':
     b.testMaskBoard()
     b.testCheckShot()
     b.testOverlapCheck()
+    b.testScore()

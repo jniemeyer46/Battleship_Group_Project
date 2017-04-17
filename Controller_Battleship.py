@@ -19,6 +19,7 @@ class ControllerBattleship:
                 loc = self.view.getShips(i)
                 if self.model.overlapCheck(self.playerBoard, 5-i, [int(loc[0][0]), int(loc[0][1])], loc[1]):
                     self.model.placeShip(self.playerBoard, 5-i, [int(loc[0][0]), int(loc[0][1])], loc[1])
+                    self.view.displayBoard(self.playerBoard)
                     break
                 else:
                     self.view.display("Ship would overlap at this location. Try again: \n")
