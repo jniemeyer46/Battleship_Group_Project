@@ -13,9 +13,15 @@ class ControllerBattleship:
     model = ModelBattleship()
 
     def inputShips(self):
-        arr = self.view.getShips()
+        print("Time to place your ships! Please input coordinates of the head. e.g. A6 or E2 ")
         for i in range(0, 5):
-            self.model.placeShip(self.playerBoard, i+1, [int(arr[i][0][0]), int(arr[i][0][1])], arr[i][1])
+            while 1:
+                loc = self.view.getShips(i)
+                if self.model.overlapCheck(self.playerBoard, 5-i, [int(loc[0][0]), int(loc[0][1])], loc[1]):
+                    self.model.placeShip(self.playerBoard, 5-i, [int(loc[0][0]), int(loc[0][1])], loc[1])
+                    break
+                else:
+                    self.view.display("Ship would overlap at this location. Try again: \n")
 
     def getShot(self):
         self.view.displayBoard(self.model.maskBoard(self.enemyBoard))

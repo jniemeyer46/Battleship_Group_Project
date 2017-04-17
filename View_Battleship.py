@@ -5,6 +5,7 @@
 class ViewBattleship():
     letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
     numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    ships = ["airship carrier", "battleship", "cruiser", "destroyer", "submarine"]
 
     def displayBoard(self, myBoard):
         counter = 0
@@ -39,8 +40,27 @@ class ViewBattleship():
         elif head == 'J':
             return '9'
 
-    def getShips(self):
-        arr = [None, None, None, None, None]
+    def getShips(self, shipNum):
+        while 1:
+            ac_head = input("Where would you like to place your " + self.ships[shipNum] + "(length =" + str((5 - shipNum)) + ")? ")
+            if ac_head[0] not in self.letters or ac_head[1] not in self.numbers:
+                print("Not a valid coordinate. Please input coordinates of the head. e.g. A6 or E2 ")
+            else:
+                break
+        while 1:
+            ac_orient = input("What orientation would you like to place your ship? Type v for vertical, h for horizontal. ")
+            if ac_orient != 'v' and ac_orient != 'h':
+                print("Not a valid orientation. Please input v or h. ")
+            else:
+                break
+        ac_head = list(ac_head)
+        ac_head[0] = self.convertCoordinates(ac_head[0])
+        ac_head[0], ac_head[1] = ac_head[1], ac_head[0]
+        ac_head = "".join(ac_head)
+        location = (ac_head, ac_orient)
+        return location
+
+        '''
         print("Time to place your ships! Please input coordinates of the head. e.g. A6 or E2 ")
         while 1:
             ac_head = input("Where would you like to place your aircraft carrier (length = 5)? ")
@@ -122,6 +142,8 @@ class ViewBattleship():
         sb_head[0], sb_head[1] = sb_head[1], sb_head[0]
         sb_head = "".join(sb_head)
         arr[0] = (sb_head, sb_orient)
+        '''
+
         return arr
 
     def getShot(self):
