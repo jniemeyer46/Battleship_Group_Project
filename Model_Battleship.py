@@ -42,4 +42,7 @@ class ModelBattleship:
                     maskedBoard.board[j][i] = ' '
         return maskedBoard
 
+    def checkShot(self, myBoard):
+        pass
+
 
