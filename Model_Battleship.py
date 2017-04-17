@@ -51,6 +51,18 @@ class ModelBattleship:
             print("Invalid shot")
 
     def overlapCheck(self, myBoard, type, start, orient):
-        pass
+        if orient == 'v':
+            for i in range(0, type):
+                if myBoard.board[start[0]+i][start[1]] == 'O':
+                    return False
+                else:
+                    return True
+        if orient == 'h':
+            for i in range(0, type):
+                if myBoard.board[start[0]][start[1]+i] == 'O':
+                    return False
+                else:
+                    return True
+
 
 
