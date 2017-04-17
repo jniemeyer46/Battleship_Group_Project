@@ -3,11 +3,13 @@
 # Battleship Model
 
 from copy import copy, deepcopy
+import random
+
 
 class ModelBattleship:
     def placeShip(self, myBoard, type, start, orient):
         try:
-            myBoard.board[start[0]][start[1]] = 'O'
+            # myBoard.board[start[0]][start[1]] = 'O'
             if orient == 'v':
                 for i in range(0, type):
                     myBoard.board[start[0]+i][start[1]] = 'O'
@@ -22,6 +24,7 @@ class ModelBattleship:
             if  myBoard.board[location[0]][location[1]] == ' ':
                 myBoard.board[location[0]][location[1]] = '*'
                 myBoard.score = myBoard.score - 10
+
             elif myBoard.board[location[0]][location[1]] == 'O':
                 myBoard.board[location[0]][location[1]] = 'X'
                 myBoard.score = myBoard.score + 100
@@ -63,6 +66,32 @@ class ModelBattleship:
                     return False
                 else:
                     return True
+
+    def randAI(self, myBoard):  # random shot placement
+        failure = True
+        while failure:
+            row = random.randint(0, 9)
+            col = random.randint(0, 9)
+            shot = (col, row)
+            failure = not self.checkShot(myBoard, shot)
+            self.placeShot(myBoard, shot)
+
+    def boundaryCheck(self, type, start, orient):
+        if orient == 'v':
+            for i in range(0, type):
+                print(str(start[1] + i))
+                if start[1] + i > 9:
+                    return False
+                else:
+                    return True
+        if orient == 'h':
+            for i in range(0, type):
+                print(str(start[0] + i))
+                if start[0] + i > 9:
+                    return False
+                else:
+                    return True
+
 
 
 

@@ -69,3 +69,6 @@ class ViewBattleship():
 
     def display(self, string):
         print(string)
+
+    def displayScore(self, myBoard):
+        print("SCORE: " + str(myBoard.score))

@@ -5,6 +5,7 @@
 from Model_Battleship import ModelBattleship
 from View_Battleship import ViewBattleship
 from GameObjects import Board
+import random
 
 class ControllerBattleship:
     playerBoard = Board()
@@ -25,7 +26,6 @@ class ControllerBattleship:
                     self.view.display("Ship would overlap at this location. Try again: \n")
 
     def getShot(self):
-        self.view.displayBoard(self.model.maskBoard(self.enemyBoard))
         while True:
             shot = self.view.getShot()
             if self.model.checkShot(self.enemyBoard, shot):
@@ -33,30 +33,60 @@ class ControllerBattleship:
                 break
             else:
                 self.view.display("Shot already placed in this location. Try again: \n")
+        self.view.displayScore(self.enemyBoard)
 
-    def makeDummyBoard(self):
+    def makeAIBoard(self):
+        for i in range(0, 5):
+            while 1:
+                start = [random.randint(0, 9), random.randint(0, 9)]
+                orient = random.choice(['v', 'h'])
+                loc = (start, orient)
+                if self.model.overlapCheck(self.enemyBoard, i+1, [int(loc[0][0]), int(loc[0][1])], loc[1]) and self.model.boundaryCheck(i+1, [int(loc[0][0]), int(loc[0][1])], loc[1]):
+                    try:
+                        self.enemyBoard.board[start[0]][start[1]] = str(i+1)
+                        if orient == 'v':
+                            for j in range(0, i+1):
+                                self.enemyBoard.board[start[0] + j][start[1]] = str(i+1)
+                            self.view.displayBoard(self.enemyBoard)
+                            break
+                        elif orient == 'h':
+                            for j in range(0, i+1):
+                                self.enemyBoard.board[start[0]][start[1] + j] = str(i+1)
+                            self.view.displayBoard(self.enemyBoard)
+                            break
+                    except:
+                        pass
+
+                    break
+        self.view.displayBoard(self.enemyBoard)
+
+
+        '''
         self.model.placeShip(self.enemyBoard, 5, [0, 0], 'v')
         self.model.placeShip(self.enemyBoard, 4, [0, 1], 'v')
         self.model.placeShip(self.enemyBoard, 3, [0, 2], 'v')
         self.model.placeShip(self.enemyBoard, 2, [0, 3], 'v')
         self.model.placeShip(self.enemyBoard, 1, [0, 4], 'v')
+        '''
 
 
 if __name__ == '__main__':
     controller = ControllerBattleship()
-#    controller.ViewtoModel()
     view = ViewBattleship()
     model = ModelBattleship()
-    controller.makeDummyBoard()
+    controller.makeAIBoard()
     view.display("Welcome to Battleship!")
     view.displayBoard(controller.playerBoard)
     controller.inputShips()
-    view.displayBoard(controller.playerBoard)
     while 1:
-        if model.checkWin(controller.enemyBoard) == False :
-            controller.getShot()
-        else:
-            view.displayBoard(controller.enemyBoard)
+        view.displayBoard(model.maskBoard(controller.enemyBoard))
+        controller.getShot()
+        if model.checkWin(controller.enemyBoard):
+            view.display("Congrats you won!!")
             break
-    view.display("Congrats you won!!")
-
+        else:
+            model.randAI(controller.playerBoard)
+            view.displayBoard(controller.playerBoard)
+            if model.checkWin(controller.playerBoard):
+                view.display("Oh no you lost!!")
+                break
