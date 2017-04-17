@@ -16,10 +16,17 @@ class ControllerBattleship:
         arr = self.view.getShips()
         for i in range(0, 5):
             self.model.placeShip(self.playerBoard, i+1, [int(arr[i][0][0]), int(arr[i][0][1])], arr[i][1])
+
     def getShot(self):
         self.view.displayBoard(self.model.maskBoard(self.enemyBoard))
-        shot = self.view.getShot()
-        self.model.placeShot(self.enemyBoard, shot)
+        while True:
+            shot = self.view.getShot()
+            if self.model.checkShot(self.enemyBoard, shot):
+                self.model.placeShot(self.enemyBoard, shot)
+                break
+            else:
+                self.view.display("Shot already placed in this location. Try again: \n")
+
     def makeDummyBoard(self):
         self.model.placeShip(self.enemyBoard, 5, [0, 0], 'v')
         self.model.placeShip(self.enemyBoard, 4, [0, 1], 'v')

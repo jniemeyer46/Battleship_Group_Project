@@ -50,4 +50,7 @@ class ModelBattleship:
         else:
             print("Invalid shot")
 
+    def overlapCheck(self, myBoard, type, start, orient):
+        pass
+
 

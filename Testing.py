@@ -116,6 +116,16 @@ class BattleshipTest(unittest.TestCase):
         expectedValue = False
         assert (actualValue == expectedValue)
 
+    def testOverlapCheck(self):
+        testObject = Board()
+        model = ModelBattleship()
+        model.placeShip(testObject, 5, [0, 0], 'v')
+
+        actualValue = model.overlapCheck(testObject, 5, [0, 0], 'h')
+        expectedValue = False
+        assert(actualValue == expectedValue)
+
+
 
 if __name__ == '__main__':
     b = BattleshipTest()
@@ -127,3 +137,4 @@ if __name__ == '__main__':
     b.testWin()
     b.testMaskBoard()
     b.testCheckShot()
+    b.testOverlapCheck()
