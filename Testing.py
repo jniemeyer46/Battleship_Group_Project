@@ -111,8 +111,8 @@ class BattleshipTest(unittest.TestCase):
         model.placeShip(testObject, 3, [0, 2], 'v')
         model.placeShip(testObject, 2, [0, 3], 'v')
         model.placeShip(testObject, 1, [0, 4], 'v')
-
-        actualValue = model.checkShot(testObject)
+        model.placeShot(testObject, [0, 0])
+        actualValue = model.checkShot(testObject, [0, 0])
         expectedValue = False
         assert (actualValue == expectedValue)
 

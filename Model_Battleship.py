@@ -21,10 +21,10 @@ class ModelBattleship:
         try:
             if  myBoard.board[location[0]][location[1]] == ' ':
                 myBoard.board[location[0]][location[1]] = '*'
-                print("MISS!")
+                #print("MISS!")
             elif myBoard.board[location[0]][location[1]] == 'O':
                 myBoard.board[location[0]][location[1]] = 'X'
-                print("HIT!")
+                #print("HIT!")
         except:
             print("Shot is out of bounds! Try again.")
 
@@ -42,7 +42,12 @@ class ModelBattleship:
                     maskedBoard.board[j][i] = ' '
         return maskedBoard
 
-    def checkShot(self, myBoard):
-        pass
+    def checkShot(self, myBoard, location):
+        if myBoard.board[location[0]][location[1]] == '*' or myBoard.board[location[0]][location[1]] == 'X':
+            return False
+        elif myBoard.board[location[0]][location[1]] == ' ' or myBoard.board[location[0]][location[1]] == 'O':
+            return True
+        else:
+            print("Invalid shot")
 
 
