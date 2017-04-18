@@ -58,14 +58,12 @@ class ModelBattleship:
             for i in range(0, type):
                 if myBoard.board[start[0]+i][start[1]] == 'O':
                     return False
-                else:
-                    return True
+            return True
         if orient == 'h':
             for i in range(0, type):
                 if myBoard.board[start[0]][start[1]+i] == 'O':
                     return False
-                else:
-                    return True
+            return True
 
     def randAI(self, myBoard):  # random shot placement
         failure = True
@@ -78,19 +76,15 @@ class ModelBattleship:
 
     def boundaryCheck(self, type, start, orient):
         if orient == 'v':
-            for i in range(0, type):
-                print(str(start[1] + i))
-                if start[1] + i > 9:
-                    return False
-                else:
-                    return True
+            if (start[0] + type) > 9:
+                return False
+            else:
+                return True
         if orient == 'h':
-            for i in range(0, type):
-                print(str(start[0] + i))
-                if start[0] + i > 9:
-                    return False
-                else:
-                    return True
+            if (start[1] + type) > 9:
+                return False
+            else:
+                return True
 
 
 

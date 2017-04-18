@@ -5,6 +5,8 @@
 class ViewBattleship():
     letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
     numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
+    menuOptions = ['1']
+    difficultyOptions = ['1', '2']
     ships = ["airship carrier", "battleship", "cruiser", "destroyer", "submarine"]
 
     def displayBoard(self, myBoard):
@@ -61,14 +63,35 @@ class ViewBattleship():
         return location
 
     def getShot(self):
-        shot = input("Time to fire! Where would you like to place your shot? e.g. A6 or E2 ")
-        shot = list(shot)
-        shot[0] = self.convertCoordinates(shot[0])
-        shot[0], shot[1] = int(shot[1]), int(shot[0])
-        return shot
+        while 1:
+            shot = input("Time to fire! Where would you like to place your shot? e.g. A6 or E2 ")
+            if shot[1] in self.numbers:
+                shot = list(shot)
+                shot[0] = self.convertCoordinates(shot[0])
+                shot[0], shot[1] = int(shot[1]), int(shot[0])
+                return shot
+            else:
+                print("Error!! Try again! ")
 
     def display(self, string):
         print(string)
 
     def displayScore(self, myBoard):
         print("SCORE: " + str(myBoard.score))
+
+    def displayMenu(self):
+        print("Welcome to Battleship!!! ")
+        while 1:
+            gamemode = input("Please choose a gamemode: \n 1. Play against the computer \n")
+            if gamemode in self.menuOptions:
+                break
+            else:
+                print("Error: Try again. ")
+        while 1:
+            difficulty = input("Choose a difficulty level: \n 1. Normal \n 2. You will lose \n")
+            if difficulty in self.difficultyOptions:
+                break
+            else:
+                print("Error: Try again. ")
+        userInput = (gamemode, difficulty)
+        return userInput
