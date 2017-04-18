@@ -74,6 +74,23 @@ class ModelBattleship:
             failure = not self.checkShot(myBoard, shot)
             self.placeShot(myBoard, shot)
 
+    def insaneAI(self, myBoard):
+        failure = True
+        flag = False
+        while failure:
+            for c in range(0, 10):
+                for r in range(0, 10):
+                    if myBoard.board[c][r] == 'O':
+                        row = r
+                        col = c
+                        flag = True
+                        break
+                if flag:
+                    break
+            shot = (col, row)
+            failure = not self.checkShot(myBoard, shot)
+            self.placeShot(myBoard, shot)
+
     def boundaryCheck(self, type, start, orient):
         if orient == 'v':
             if (start[0] + type) > 9:

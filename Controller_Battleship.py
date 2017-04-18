@@ -18,12 +18,12 @@ class ControllerBattleship:
         for i in range(0, 5):
             while 1:
                 loc = self.view.getShips(i)
-                if self.model.overlapCheck(self.playerBoard, 5-i, [int(loc[0][0]), int(loc[0][1])], loc[1]):
+                if self.model.boundaryCheck(5-i, [int(loc[0][0]), int(loc[0][1])], loc[1]) and self.model.overlapCheck(self.playerBoard, 5-i, [int(loc[0][0]), int(loc[0][1])], loc[1]):
                     self.model.placeShip(self.playerBoard, 5-i, [int(loc[0][0]), int(loc[0][1])], loc[1])
                     self.view.displayBoard(self.playerBoard)
                     break
                 else:
-                    self.view.display("Ship would overlap at this location. Try again: \n")
+                    self.view.display("Invalid ship location. Try again. \n")
 
     def getShot(self):
         while True:
@@ -68,29 +68,48 @@ class ControllerBattleship:
 
 
 if __name__ == '__main__':
-    controller = ControllerBattleship()
-    view = ViewBattleship()
-    model = ModelBattleship()
-    controller.makeAIBoard()
-    userInput = view.displayMenu()
-    view.displayBoard(controller.playerBoard)
-    controller.inputShips()
-    if userInput[0] == '1':
-        if userInput[1] == '1':
-            while 1:
-                view.display("Enemy Board: ")
-                view.displayBoard(model.maskBoard(controller.enemyBoard))
-                controller.getShot()
-                if model.checkWin(controller.enemyBoard):
-                    view.display("Congrats you won!!")
-                    break
-                else:
-                    model.randAI(controller.playerBoard)
-                    view.display("Your Board: ")
-                    view.displayBoard(controller.playerBoard)
-                    if model.checkWin(controller.playerBoard):
-                        view.display("Oh no you lost!!")
+    flag = True
+    while flag:
+        controller = ControllerBattleship()
+        controller.playerBoard = Board()
+        controller.enemyBoard = Board()
+        view = ViewBattleship()
+        model = ModelBattleship()
+        controller.makeAIBoard()
+        userInput = view.displayMenu()
+        view.displayBoard(controller.playerBoard)
+        controller.inputShips()
+        if userInput[0] == '1':
+            if userInput[1] == '1':
+                while 1:
+                    view.display("Enemy Board: ")
+                    view.displayBoard(model.maskBoard(controller.enemyBoard))
+                    controller.getShot()
+                    if model.checkWin(controller.enemyBoard):
+                        view.display("Congrats you won!!")
                         break
-            view.displayBoard(controller.enemyBoard)
-        elif userInput[1] == '2':
-            pass
+                    else:
+                        model.randAI(controller.playerBoard)
+                        view.display("Your Board: ")
+                        view.displayBoard(controller.playerBoard)
+                        if model.checkWin(controller.playerBoard):
+                            view.display("Oh no you lost!!")
+                            break
+                view.displayBoard(controller.enemyBoard)
+            elif userInput[1] == '2':
+                while 1:
+                    view.display("Enemy Board: ")
+                    view.displayBoard(model.maskBoard(controller.enemyBoard))
+                    controller.getShot()
+                    if model.checkWin(controller.enemyBoard):
+                        view.display("Congrats you won!!")
+                        break
+                    else:
+                        model.insaneAI(controller.playerBoard)
+                        view.display("Your Board: ")
+                        view.displayBoard(controller.playerBoard)
+                        if model.checkWin(controller.playerBoard):
+                            view.display("Oh no you lost!!")
+                            break
+        elif userInput[0] == '0':
+            break
