@@ -77,13 +77,11 @@ if __name__ == '__main__':
         controller.enemyBoard = Board()
         view = ViewBattleship()
         model = ModelBattleship()
-        client = Client()
-
-        controller.makeAIBoard()
         userInput = view.displayMenu()
-        view.displayBoard(controller.playerBoard)
-        controller.inputShips()
         if userInput[0] == '1':
+            controller.makeAIBoard()
+            view.displayBoard(controller.playerBoard)
+            controller.inputShips()
             if userInput[1] == '1':
                 while 1:
                     view.display("Enemy Board: ")
@@ -117,3 +115,5 @@ if __name__ == '__main__':
                             break
         elif userInput[0] == '0':
             break
+        elif userInput[0] == '2':
+            client = Client()

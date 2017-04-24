@@ -6,7 +6,7 @@ import os
 class ViewBattleship():
     letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J']
     numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
-    menuOptions = ['1', '0']
+    menuOptions = ['1', '0', '2']
     difficultyOptions = ['1', '2']
     ships = ["airship carrier", "battleship", "cruiser", "destroyer", "submarine"]
 
@@ -96,23 +96,26 @@ class ViewBattleship():
     def displayMenu(self):
         print("Welcome to Battleship!!! ")
         while 1:
-            gamemode = input("Please choose a gamemode: \n 1. Play against the computer \n 0. Quit \n")
+            gamemode = input("Please choose a gamemode: \n 1. Play against the computer \n 2. Play online \n 0. Quit \n")
             if gamemode in self.menuOptions:
                 break
             else:
                 print("Error: Try again. ")
-        if gamemode != '0':
+        if gamemode == '1':
             while 1:
                 difficulty = input("Choose a difficulty level: \n 1. Normal \n 2. You will lose \n")
                 if difficulty in self.difficultyOptions:
                     break
                 else:
                     print("Error: Try again. ")
-            userInput = (gamemode, difficulty)
-            return userInput
-        else:
+        elif gamemode == '0':
             print("Goodbye! ")
             os._exit(0)
+        else:
+            difficulty = 0
+            userInput = (gamemode, difficulty)
+            return userInput
+
 
     def get_username(self):
         name = input("What would you like your username to be? ")

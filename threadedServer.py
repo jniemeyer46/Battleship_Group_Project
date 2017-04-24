@@ -1,12 +1,16 @@
-# import json
+import json
 import socket
 import threading
 import os
-from GameObjects import Player
-from Model_Battleship import ModelBattleship
-import struct
+from GameObjects import Player, Board
+
+
 # import time
 
+# JSONs
+incom_shot = '{"username":"bmissel", "action":"incoming shot", "data":{"coordinate":"A6"}}'
+outg_shot = '{"username":"bmissel", "action":"outgoing shot", "data":{"coordinate":"A6", "result":"hit"}}'
+send_board = '{"username":"bmissel", "action":"board", "data":{"board":""}}'
 
 # This is the Server object file that will be launched from the controller.
 # This functions of this class are as follows:
@@ -61,7 +65,7 @@ class Server:
                     d2 = 'player 2'
                     t1 = threading.Thread(target=Server.receiving_thread, args=(self, index, d2, True))
                     t1.start()
-                connected = "Connected."
+                connected = "Connected to the server. Waiting for another player..."
                 Server.sendResult(self, addr, str.encode(connected))
             else:
                 index = self.clients.index(addr)
@@ -71,7 +75,7 @@ class Server:
     def receiving_thread(self, i, data, welc):
         addr = Server.clients[i]
         if data == '>:(':
-            os._exit(0)
+            os._exit(0)  # RAGE QUIT!!
         elif welc:
             if data == 'player 1':
                 send_back = "You have been connected with " + self.in_game[i][1].username
@@ -80,7 +84,8 @@ class Server:
                 send_back = "You have been connected with " + self.in_game[i][0].username
                 Server.sendResult(self, self.in_game[i][1].address, str.encode(send_back))
         else:
-            send_back = "Server received your message! "
+            print(data)
+            send_back = "Server received your message, but did nothing because you suck!"
             Server.sendResult(self, addr, str.encode(send_back))
 		
 # for testing purposing

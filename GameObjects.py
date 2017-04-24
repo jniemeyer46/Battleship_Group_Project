@@ -16,3 +16,4 @@ class Player():
         self.username = username
         self.address = addr
         self.game_id = game_id
+        self.board = Board()
