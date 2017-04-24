@@ -113,3 +113,7 @@ class ViewBattleship():
         else:
             print("Goodbye! ")
             os._exit(0)
+
+    def get_username(self):
+        name = input("What would you like your username to be? ")
+        return name

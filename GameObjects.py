@@ -11,3 +11,8 @@ class Board():
         self.board = [[' ' for i in range(0, self.size)] for i in range(0, self.size)]
         self.score = 0
 
+class Player():
+    def __init__(self, username, addr, game_id):
+        self.username = username
+        self.address = addr
+        self.game_id = game_id

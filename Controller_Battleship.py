@@ -5,6 +5,7 @@
 from Model_Battleship import ModelBattleship
 from View_Battleship import ViewBattleship
 from GameObjects import Board
+from client import Client
 import random
 
 class ControllerBattleship:
@@ -12,6 +13,7 @@ class ControllerBattleship:
     enemyBoard = Board()
     view = ViewBattleship()
     model = ModelBattleship()
+
 
     def inputShips(self):
         print("Time to place your ships! Please input coordinates of the head. e.g. A6 or E2 ")
@@ -75,6 +77,8 @@ if __name__ == '__main__':
         controller.enemyBoard = Board()
         view = ViewBattleship()
         model = ModelBattleship()
+        client = Client()
+
         controller.makeAIBoard()
         userInput = view.displayMenu()
         view.displayBoard(controller.playerBoard)
