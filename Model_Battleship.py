@@ -21,7 +21,7 @@ class ModelBattleship:
 
     def placeShot(self, myBoard, location):
         try:
-            if  myBoard.board[location[0]][location[1]] == ' ':
+            if myBoard.board[location[0]][location[1]] == ' ':
                 myBoard.board[location[0]][location[1]] = '*'
                 myBoard.score = myBoard.score - 10
 
@@ -45,7 +45,7 @@ class ModelBattleship:
                     maskedBoard.board[j][i] = ' '
         return maskedBoard
 
-    def checkShot(self, myBoard, location):
+    def checkShot(self, myBoard, location):  # checks valid location
         if myBoard.board[location[0]][location[1]] == '*' or myBoard.board[location[0]][location[1]] == 'X':
             return False
         elif myBoard.board[location[0]][location[1]] == ' ' or myBoard.board[location[0]][location[1]] == 'O':

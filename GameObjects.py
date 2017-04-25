@@ -17,3 +17,4 @@ class Player():
         self.address = addr
         self.game_id = game_id
         self.board = Board()
+        self.board_filled = False

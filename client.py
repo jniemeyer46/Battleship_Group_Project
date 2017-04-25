@@ -1,5 +1,5 @@
 import socket
-# import json
+import json
 # import time
 import os
 from View_Battleship import ViewBattleship
@@ -9,6 +9,7 @@ from GameObjects import Board
 # JSON templates
 incom_shot = '{"username":"bmissel", "action":"incoming shot", "data":{"coordinate":""}}'
 outg_shot = '{"username":"bmissel", "action":"outgoing shot", "data":{"coordinate":"", "result":""}}'
+server_shot = '{"username":"bmissel", "action":"server shot", "data":{"coordinate":"", "result":""}}'
 send_board = '{"username":"bmissel", "action":"board", "data":{"board":""}}'
 
 
@@ -23,6 +24,7 @@ class Client:
     enemy_board = Board()
     view = ViewBattleship()
     model = ModelBattleship()
+    username = view.get_username()
 
     def __init__(self):
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -31,20 +33,27 @@ class Client:
         except socket.error:
             self.view.display("Error connecting to the server.")
             os._exit(1)
-        username = self.view.get_username()
-        sock.sendto(str.encode(username), self.server)
+
+        sock.sendto(str.encode(self.username), self.server)
         data, server = sock.recvfrom(self.buffer)
         data = data.decode('utf-8')
         self.view.display(data)
+        # start here
+        data, server = sock.recvfrom(self.buffer)
+        data = data.decode('utf-8')
+        self.view.display(data)
+        self.view.displayBoard(self.player_board)
+        self.inputShips()
+        send_board = '{"username":"' + self.username + '", "action":"board", "data":{"board":"' + str(self.player_board.board) + '"}}'
+        sock.sendto(str.encode(send_board), server)
+        data, server = sock.recvfrom(self.buffer)
+        data = data.decode('utf-8')
+        if data == 'Game begin':
+            while 1:
+                self.view.display("Enemy Board: ")
+                self.view.displayBoard(self.enemy_board)
+                self.getShot(sock)
 
-        while not self.shutdown:
-            data, server = sock.recvfrom(self.buffer)
-            data = data.decode('utf-8')
-            self.view.display(data)
-            self.view.displayBoard(self.player_board)
-            self.inputShips()
-            send_board = '{"username":"' + username + '", "action":"board", "data":{"board":"' + str(self.player_board.board) + '"}}'
-            sock.sendto(str.encode(send_board), server)
 
     def inputShips(self):  # copied from the Controller to please the Python gods.
         self.view.display("Time to place your ships! Please input coordinates of the head. e.g. A6 or E2 ")
@@ -61,12 +70,30 @@ class Client:
                 else:
                     self.view.display("Invalid ship location. Try again. \n")
 
-    def getShot(self):  # copied from the Controller to please the Python gods.
+    def getShot(self, sock):  # copied from the Controller to please the Python gods.
         while True:
             shot = self.view.getShot()
+            out_shot = '{"username":"' + self.username + '", "action":"outgoing shot", "data":{"coordinate":"' + str(shot) + '", "result":"awaiting response"}}'
             if self.model.checkShot(self.enemy_board, shot):
-                self.model.placeShot(self.enemy_board, shot)
-                break
+                sock.sendto(str.encode(out_shot), self.server)
+                data, server = sock.recvfrom(self.buffer)
+                data = json.loads(data)
+                if data['action'] == 'server shot' and data['username'] != self.username:
+                    result = (data['data']['coordinate'], data['data']['result'])
+                    if result[1] == 'hit':
+                        self.enemy_board.board[result[0][1]][result[0][1]] = 'X'
+                        self.enemy_board.score = self.enemy_board.score + 100
+                    elif result[1] == 'miss':
+                        self.enemy_board.board[result[0][1]][result[0][1]] = '*'
+                    self.enemy_board.score = self.enemy_board.score - 10
+                    break
+                elif data['action'] == 'server shot' and data['username'] == self.username:
+                    result = (data['data']['coordinate'], data['data']['result'])
+                    if result[1] == 'hit':
+                        self.player_board.board[result[0][1]][result[0][1]] = 'X'
+                    elif result[1] == 'miss':
+                        self.player_board.board[result[0][1]][result[0][1]] = '*'
+                    break
             else:
                 self.view.display("Shot already placed in this location. Try again: \n")
         self.view.displayScore(self.enemy_board)

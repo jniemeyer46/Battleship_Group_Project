@@ -3,6 +3,7 @@ import socket
 import threading
 import os
 from GameObjects import Player, Board
+from Model_Battleship import ModelBattleship
 from copy import deepcopy
 
 
@@ -29,7 +30,8 @@ class Server:
     in_game = [()]
     buffer = 1024
     server_end = False
-    listening = True
+    boards_received = False
+    model = ModelBattleship()
     # Open the socket
     server_i = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # JSON template
@@ -77,6 +79,7 @@ class Server:
 
     def receiving_thread(self, i, data, welc):
         addr = Server.clients[i]
+        data_j = ''
         try:
             data_j = json.loads(data)
         except:
@@ -95,7 +98,35 @@ class Server:
                 if self.in_game[0][j].address == addr:
                     self.in_game[0][j].board = deepcopy(data_j['data']['board'])
                     print("Board initial board stored for " + self.in_game[0][j].username)
-                    print(str(self.in_game[0][j].board))
+                    # print(str(self.in_game[0][j].board))
+                    self.in_game[0][j].board_filled = True
+            if self.in_game[0][0].board_filled and self.in_game[0][1].board_filled:
+                self.boards_received = True
+            if self.boards_received:
+                print('Both user boards submitted. Time to fire!')
+                self.server_i.sendto(str.encode('Game begin'), self.in_game[0][0].address)
+                self.server_i.sendto(str.encode('Game begin'), self.in_game[0][1].address)
+
+        elif data_j['action'] == 'outgoing shot' and data_j['data']['result'] == 'awaiting response':
+            location = data_j['data']['coordinate']
+            print(location)
+            for i in range(0, 2):
+                if self.in_game[0][i].address != addr:
+                    board = deepcopy(self.in_game[0][i].board)
+                    print(location[0] + ' ' + location[1])
+                    print(board[location[0]][location[1]])
+                    name = self.in_game[0][i].username
+                    self.model.placeShot(board, location)
+                    if board[location[0]][location[1]] == 'X':
+                        result = 'hit'
+                    elif board[location[0]][location[1]] == '*':
+                        result = 'miss'
+                    server_shot = '{"username":"' + name + '", "action":"server shot", "data":{"coordinate":"' + location + '", "result":"' + result + '"}}'
+                    self.server_i.sendall(str.encode(server_shot))
+                    self.in_game[0][i].board = deepcopy(board)
+                    break
+
+
         else:
             print(data)
             send_back = "Server received your message, but did nothing because you suck!"
