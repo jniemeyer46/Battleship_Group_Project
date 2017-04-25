@@ -3,14 +3,16 @@ import socket
 import threading
 import os
 from GameObjects import Player, Board
+from copy import deepcopy
 
 
 # import time
 
-# JSONs
-incom_shot = '{"username":"bmissel", "action":"incoming shot", "data":{"coordinate":"A6"}}'
-outg_shot = '{"username":"bmissel", "action":"outgoing shot", "data":{"coordinate":"A6", "result":"hit"}}'
+# JSON templates
+incom_shot = '{"username":"bmissel", "action":"incoming shot", "data":{"coordinate":""}}'
+outg_shot = '{"username":"bmissel", "action":"outgoing shot", "data":{"coordinate":"", "result":""}}'
 send_board = '{"username":"bmissel", "action":"board", "data":{"board":""}}'
+
 
 # This is the Server object file that will be launched from the controller.
 # This functions of this class are as follows:
@@ -41,6 +43,7 @@ class Server:
         # Bind to the port
         try:
             self.server_i.bind((Server.m_host, Server.m_port))
+            print("Server started. Listening for incoming connections...")
         except:
             pass
         # Main loop to add new clients
@@ -51,13 +54,13 @@ class Server:
             if addr not in self.clients:
                 self.clients.append(addr)
                 self.client_lobby.append((data, addr))
+                print(data + ' has joined the server.')
                 if len(self.client_lobby) == 2:
                     p1 = Player(self.client_lobby[0][0], self.client_lobby[0][1], 1)
                     p2 = Player(self.client_lobby[1][0], self.client_lobby[1][1], 1)
                     self.client_lobby = []
                     self.in_game[0] = (p1, p2)
-                    print(self.in_game[0][0].username)
-                    print(self.in_game[0][1].username)
+                    print(self.in_game[0][0].username + ' and ' + self.in_game[0][1].username + ' have started a game together.')
                     index = 0
                     d1 = 'player 1'
                     t = threading.Thread(target=Server.receiving_thread, args=(self, index, d1, True))
@@ -74,6 +77,10 @@ class Server:
 
     def receiving_thread(self, i, data, welc):
         addr = Server.clients[i]
+        try:
+            data_j = json.loads(data)
+        except:
+            pass
         if data == '>:(':
             os._exit(0)  # RAGE QUIT!!
         elif welc:
@@ -83,6 +90,12 @@ class Server:
             if data == 'player 2':
                 send_back = "You have been connected with " + self.in_game[i][0].username
                 Server.sendResult(self, self.in_game[i][1].address, str.encode(send_back))
+        elif data_j['action'] == 'board':
+            for j in range(0, 2):
+                if self.in_game[0][j].address == addr:
+                    self.in_game[0][j].board = deepcopy(data_j['data']['board'])
+                    print("Board initial board stored for " + self.in_game[0][j].username)
+                    print(str(self.in_game[0][j].board))
         else:
             print(data)
             send_back = "Server received your message, but did nothing because you suck!"

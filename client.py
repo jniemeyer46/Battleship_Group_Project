@@ -6,6 +6,10 @@ from View_Battleship import ViewBattleship
 from Model_Battleship import ModelBattleship
 from GameObjects import Board
 
+# JSON templates
+incom_shot = '{"username":"bmissel", "action":"incoming shot", "data":{"coordinate":""}}'
+outg_shot = '{"username":"bmissel", "action":"outgoing shot", "data":{"coordinate":"", "result":""}}'
+send_board = '{"username":"bmissel", "action":"board", "data":{"board":""}}'
 
 
 class Client:
@@ -27,8 +31,8 @@ class Client:
         except socket.error:
             self.view.display("Error connecting to the server.")
             os._exit(1)
-
-        sock.sendto(str.encode(self.view.get_username()), self.server)
+        username = self.view.get_username()
+        sock.sendto(str.encode(username), self.server)
         data, server = sock.recvfrom(self.buffer)
         data = data.decode('utf-8')
         self.view.display(data)
@@ -39,7 +43,8 @@ class Client:
             self.view.display(data)
             self.view.displayBoard(self.player_board)
             self.inputShips()
-            sock.sendto(str.encode(str(self.player_board.board)), server)
+            send_board = '{"username":"' + username + '", "action":"board", "data":{"board":"' + str(self.player_board.board) + '"}}'
+            sock.sendto(str.encode(send_board), server)
 
     def inputShips(self):  # copied from the Controller to please the Python gods.
         self.view.display("Time to place your ships! Please input coordinates of the head. e.g. A6 or E2 ")
@@ -65,6 +70,3 @@ class Client:
             else:
                 self.view.display("Shot already placed in this location. Try again: \n")
         self.view.displayScore(self.enemy_board)
-
-
-
