@@ -4,6 +4,7 @@ import threading
 import os
 from GameObjects import Player, Board
 from Model_Battleship import ModelBattleship
+from View_Battleship import ViewBattleship
 from copy import deepcopy
 
 
@@ -32,6 +33,7 @@ class Server:
     server_end = False
     boards_received = False
     model = ModelBattleship()
+    view = ViewBattleship()
     # Open the socket
     server_i = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     # JSON template
@@ -39,6 +41,22 @@ class Server:
 
     def sendResult(self, addr, string):
         self.server_i.sendto(string, addr)
+
+
+    def parseBoard(self, string):  # because JSONs are strings, we must parse the board and create a new board
+        temp = Board()
+        string = string.replace(',', '')
+        string = string.replace('[', '')
+        string = string.replace(']', '')
+        string = string.replace('\'', '')
+        for i in range(1, len(string)):
+            string = string[:i] + string[i+1:]
+        s = 0
+        for i in range(0, 10):
+            for j in range(0, 10):
+                temp.board[i][j] = string[s]
+                s += 1
+        return temp
 
     # Member Functions
     def __init__(self):
@@ -96,9 +114,9 @@ class Server:
         elif data_j['action'] == 'board':
             for j in range(0, 2):
                 if self.in_game[0][j].address == addr:
-                    self.in_game[0][j].board = deepcopy(data_j['data']['board'])
-                    print("Board initial board stored for " + self.in_game[0][j].username)
-                    # print(str(self.in_game[0][j].board))
+                    self.in_game[0][j].board = deepcopy(self.parseBoard(data_j['data']['board']))
+                    print("Updated board stored for " + self.in_game[0][j].username)
+                    self.view.displayBoard(self.in_game[0][j].board)
                     self.in_game[0][j].board_filled = True
             if self.in_game[0][0].board_filled and self.in_game[0][1].board_filled:
                 self.boards_received = True
@@ -108,24 +126,40 @@ class Server:
                 self.server_i.sendto(str.encode('Game begin'), self.in_game[0][1].address)
 
         elif data_j['action'] == 'outgoing shot' and data_j['data']['result'] == 'awaiting response':
+            result = 'miss'
             location = data_j['data']['coordinate']
+            location = tuple(map(int, location.split(' ')))
             print(location)
             for i in range(0, 2):
                 if self.in_game[0][i].address != addr:
                     board = deepcopy(self.in_game[0][i].board)
-                    print(location[0] + ' ' + location[1])
-                    print(board[location[0]][location[1]])
+                    print(board.board[1][3])
                     name = self.in_game[0][i].username
                     self.model.placeShot(board, location)
-                    if board[location[0]][location[1]] == 'X':
+                    if board.board[location[0]][location[1]] == 'X':
                         result = 'hit'
-                    elif board[location[0]][location[1]] == '*':
+                    elif board.board[location[0]][location[1]] == '*':
                         result = 'miss'
-                    server_shot = '{"username":"' + name + '", "action":"server shot", "data":{"coordinate":"' + location + '", "result":"' + result + '"}}'
-                    self.server_i.sendall(str.encode(server_shot))
+                    server_shot = '{"username":"' + name + '", "action":"server shot", "data":{"coordinate":"' + str(location) + '", "result":"' + result + '"}}'
+                    self.server_i.sendto(str.encode(server_shot), self.in_game[0][0].address)
+                    self.server_i.sendto(str.encode(server_shot), self.in_game[0][1].address)
                     self.in_game[0][i].board = deepcopy(board)
                     break
-
+        elif data_j['action'] == 'win request':
+            if self.model.checkWin(self.in_game[0][0].board):
+                win_c = '{"username":"' + self.in_game[0][1].username + '", "action":"win request", "data":{"win_c":"true"}}'
+                print(win_c)
+                self.server_i.sendto(str.encode(win_c), self.in_game[0][0].address)
+                self.server_i.sendto(str.encode(win_c), self.in_game[0][1].address)
+            elif self.model.checkWin(self.in_game[0][1].board):
+                win_c = '{"username":"' + self.in_game[0][0].username + '", "action":"win request", "data":{"win_c":"true"}}'
+                self.server_i.sendto(str.encode(win_c), self.in_game[0][0].address)
+                self.server_i.sendto(str.encode(win_c), self.in_game[0][1].address)
+            else:
+                win_c = '{"username":"' + self.in_game[0][0].username + '", "action":"win request", "data":{"win_c":"false"}}'
+                print(win_c)
+                self.server_i.sendto(str.encode(win_c), self.in_game[0][0].address)
+                self.server_i.sendto(str.encode(win_c), self.in_game[0][1].address)
 
         else:
             print(data)

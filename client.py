@@ -11,7 +11,7 @@ incom_shot = '{"username":"bmissel", "action":"incoming shot", "data":{"coordina
 outg_shot = '{"username":"bmissel", "action":"outgoing shot", "data":{"coordinate":"", "result":""}}'
 server_shot = '{"username":"bmissel", "action":"server shot", "data":{"coordinate":"", "result":""}}'
 send_board = '{"username":"bmissel", "action":"board", "data":{"board":""}}'
-
+send_request_w = '{"username":"", "action":"win request", "data":{"win_c":""}}'
 
 class Client:
     # client data
@@ -21,7 +21,9 @@ class Client:
     server = (host, port)
     buffer = 1024
     player_board = Board()
+    player_shot = False
     enemy_board = Board()
+    enemy_shot = False
     view = ViewBattleship()
     model = ModelBattleship()
     username = view.get_username()
@@ -50,9 +52,25 @@ class Client:
         data = data.decode('utf-8')
         if data == 'Game begin':
             while 1:
-                self.view.display("Enemy Board: ")
-                self.view.displayBoard(self.enemy_board)
-                self.getShot(sock)
+                send = '{"username":"' + self.username + '", "action":"win request", "data":{"win_c":""}}'
+                sock.sendto(str.encode(send), server)
+                win_c, server = sock.recvfrom(self.buffer)
+                win_c = json.loads(win_c.decode('utf-8'))
+                if win_c['data']['win_c'] == 'true' and win_c['username'] == self.username:
+                    self.view.display("Congrats you won!!")
+                    break
+                if win_c['data']['win_c'] == 'true' and win_c['username'] != self.username:
+                    self.view.display("Oh no you lost!!")
+                    break
+                shot = self.view.getShot()
+                out_shot = '{"username":"' + self.username + '", "action":"outgoing shot", "data":{"coordinate":"' + str(
+                    shot[0]) + ' ' + str(shot[1]) + '", "result":"awaiting response"}}'
+                if self.model.checkShot(self.enemy_board, shot):
+                    sock.sendto(str.encode(out_shot), self.server)
+                    self.getShot(sock)
+                else:
+                    self.view.display("Shot already placed in this location. Try again: \n")
+                self.view.displayScore(self.enemy_board)
 
 
     def inputShips(self):  # copied from the Controller to please the Python gods.
@@ -72,28 +90,33 @@ class Client:
 
     def getShot(self, sock):  # copied from the Controller to please the Python gods.
         while True:
-            shot = self.view.getShot()
-            out_shot = '{"username":"' + self.username + '", "action":"outgoing shot", "data":{"coordinate":"' + str(shot) + '", "result":"awaiting response"}}'
-            if self.model.checkShot(self.enemy_board, shot):
-                sock.sendto(str.encode(out_shot), self.server)
-                data, server = sock.recvfrom(self.buffer)
-                data = json.loads(data)
-                if data['action'] == 'server shot' and data['username'] != self.username:
-                    result = (data['data']['coordinate'], data['data']['result'])
-                    if result[1] == 'hit':
-                        self.enemy_board.board[result[0][1]][result[0][1]] = 'X'
-                        self.enemy_board.score = self.enemy_board.score + 100
-                    elif result[1] == 'miss':
-                        self.enemy_board.board[result[0][1]][result[0][1]] = '*'
+            if self.enemy_shot and self.player_shot:
+                self.view.display("Your board: ")
+                self.view.displayBoard(self.player_board)
+                self.view.display("Enemy Board: ")
+                self.view.displayBoard(self.enemy_board)
+                self.enemy_shot = False
+                self.player_shot = False
+                break
+            data, server = sock.recvfrom(self.buffer)
+            data = json.loads(data.decode('utf-8'))
+            if data['action'] == 'server shot' and data['username'] != self.username:
+                result = (data['data']['coordinate'], data['data']['result'])
+                coord = (int(result[0][1]), int(result[0][4]))
+
+                if result[1] == 'hit':
+                    self.enemy_board.board[coord[0]][coord[1]] = 'X'
+                    self.enemy_board.score = self.enemy_board.score + 100
+                elif result[1] == 'miss':
+                    self.enemy_board.board[coord[0]][coord[1]] = '*'
                     self.enemy_board.score = self.enemy_board.score - 10
-                    break
-                elif data['action'] == 'server shot' and data['username'] == self.username:
-                    result = (data['data']['coordinate'], data['data']['result'])
-                    if result[1] == 'hit':
-                        self.player_board.board[result[0][1]][result[0][1]] = 'X'
-                    elif result[1] == 'miss':
-                        self.player_board.board[result[0][1]][result[0][1]] = '*'
-                    break
-            else:
-                self.view.display("Shot already placed in this location. Try again: \n")
-        self.view.displayScore(self.enemy_board)
+                self.player_shot = True
+            if data['action'] == 'server shot' and data['username'] == self.username:
+                result = (data['data']['coordinate'], data['data']['result'])
+                coord = (int(result[0][1]), int(result[0][4]))
+                if result[1] == 'hit':
+                    self.player_board.board[coord[0]][coord[1]] = 'X'
+                elif result[1] == 'miss':
+                    self.player_board.board[coord[0]][coord[1]] = '*'
+                self.enemy_shot = True
+
