@@ -127,13 +127,14 @@ class Server:
 
         elif data_j['action'] == 'outgoing shot' and data_j['data']['result'] == 'awaiting response':
             result = 'miss'
+            username = data_j['username']
             location = data_j['data']['coordinate']
             location = tuple(map(int, location.split(' ')))
-            print(location)
+            print(username + ' fired on: ' + str(location))
             for i in range(0, 2):
                 if self.in_game[0][i].address != addr:
                     board = deepcopy(self.in_game[0][i].board)
-                    print(board.board[1][3])
+                    # print(board.board[1][3])
                     name = self.in_game[0][i].username
                     self.model.placeShot(board, location)
                     if board.board[location[0]][location[1]] == 'X':
@@ -148,7 +149,7 @@ class Server:
         elif data_j['action'] == 'win request':
             if self.model.checkWin(self.in_game[0][0].board):
                 win_c = '{"username":"' + self.in_game[0][1].username + '", "action":"win request", "data":{"win_c":"true"}}'
-                print(win_c)
+                # print(win_c)
                 self.server_i.sendto(str.encode(win_c), self.in_game[0][0].address)
                 self.server_i.sendto(str.encode(win_c), self.in_game[0][1].address)
             elif self.model.checkWin(self.in_game[0][1].board):
@@ -157,7 +158,7 @@ class Server:
                 self.server_i.sendto(str.encode(win_c), self.in_game[0][1].address)
             else:
                 win_c = '{"username":"' + self.in_game[0][0].username + '", "action":"win request", "data":{"win_c":"false"}}'
-                print(win_c)
+                # print(win_c)
                 self.server_i.sendto(str.encode(win_c), self.in_game[0][0].address)
                 self.server_i.sendto(str.encode(win_c), self.in_game[0][1].address)
 
