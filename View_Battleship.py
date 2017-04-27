@@ -105,7 +105,8 @@ class ViewBattleship():
             while 1:
                 difficulty = input("Choose a difficulty level: \n 1. Normal \n 2. You will lose \n")
                 if difficulty in self.difficultyOptions:
-                    break
+                    userInput = (gamemode, difficulty)
+                    return userInput
                 else:
                     print("Error: Try again. ")
         elif gamemode == '0':
